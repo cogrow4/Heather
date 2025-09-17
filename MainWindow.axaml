@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Heather.ViewModels"
+        x:Class="Heather.MainWindow"
+        Title="Heather — Weather"
+        Width="920" Height="620">
+
+  <Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
+
+  <Grid RowDefinitions="Auto,Auto,*" Margin="14">
+    <!-- Search bar -->
+    <StackPanel Orientation="Horizontal" Spacing="8">
+      <TextBox Width="380" Watermark="Enter city, ZIP or lat,long" Text="{Binding Query, Mode=TwoWay}"/>
+      <Button Content="Search" Command="{Binding SearchCommand}" />
+      <Button Content="°C / °F" Command="{Binding ToggleUnitsCommand}" />
+    </StackPanel>
+
+    <!-- Current weather card -->
+    <Border Grid.Row="1" Margin="0,12,0,12" Padding="12" CornerRadius="10" Background="#0F1115">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <StackPanel Orientation="Vertical" Spacing="4">
+          <TextBlock Text="{Binding LocationName}" FontSize="20" FontWeight="Bold" Foreground="White" />
+          <TextBlock Text="{Binding LocalTime}" FontSize="12" Foreground="#BBB" />
+          <TextBlock Text="{Binding Current.ConditionText}" FontSize="14" Foreground="#DDD" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+          <TextBlock Text="{Binding Current.TemperatureFormatted}" FontSize="48" FontWeight="Bold" Foreground="White" />
+          <TextBlock FontSize="12" Foreground="#BBB">
+            <Run Text="Feels like "/>
+            <Run Text="{Binding Current.FeelsLikeFormatted}" />
+          </TextBlock>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Right">
+          <StackPanel Orientation="Horizontal"><TextBlock Text="Wind: " Foreground="#DDD"/> <TextBlock Text="{Binding Current.WindText}" Foreground="#DDD"/></StackPanel>
+          <TextBlock Text="{Binding Current.GustText}" Foreground="#DDD" />
+          <StackPanel Orientation="Horizontal"><TextBlock Text="Humidity: " Foreground="#DDD"/><TextBlock Text="{Binding Current.Humidity}" Foreground="#DDD"/><TextBlock Text="%" Foreground="#DDD"/></StackPanel>
+          <StackPanel Orientation="Horizontal"><TextBlock Text="Cloud: " Foreground="#DDD"/><TextBlock Text="{Binding Current.Cloud}" Foreground="#DDD"/><TextBlock Text="%" Foreground="#DDD"/></StackPanel>
+          <TextBlock Text="{Binding Current.DewpointText}" Foreground="#DDD" />
+          <StackPanel Orientation="Horizontal"><TextBlock Text="Precip: " Foreground="#DDD"/><TextBlock Text="{Binding Current.PrecipText}" Foreground="#DDD"/></StackPanel>
+          <TextBlock Text="{Binding Current.IsDayText}" Foreground="#DDD" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- Forecast list -->
+    <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+      <ItemsControl ItemsSource="{Binding ForecastDays}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Border Margin="6" Padding="12" CornerRadius="8" Background="#111214" Width="200">
+              <StackPanel>
+                <TextBlock Text="{Binding DateReadable}" FontWeight="Bold" Foreground="#EEE" />
+                <TextBlock Text="{Binding Condition}" Foreground="#DDD" />
+                <StackPanel Orientation="Horizontal"><TextBlock Text="High: " Foreground="#DDD"/><TextBlock Text="{Binding MaxTempFormatted}" Foreground="#EEE"/><TextBlock Text="  " /><TextBlock Text="Low: " Foreground="#DDD"/><TextBlock Text="{Binding MinTempFormatted}" Foreground="#EEE"/></StackPanel>
+                <StackPanel Orientation="Horizontal"><TextBlock Text="Chance Precip: " Foreground="#DDD"/><TextBlock Text="{Binding ChanceOfPrecip}" Foreground="#EEE" /><TextBlock Text="%" Foreground="#EEE"/></StackPanel>
+                <StackPanel Orientation="Horizontal"><TextBlock Text="Sunrise: " Foreground="#DDD"/><TextBlock Text="{Binding Sunrise}" Foreground="#EEE" /><TextBlock Text="  " Foreground="#DDD"/><TextBlock Text="Sunset: " Foreground="#DDD" /><TextBlock Text="{Binding Sunset}" Foreground="#EEE"/></StackPanel>
+                <StackPanel Orientation="Horizontal"><TextBlock Text="Moon: " Foreground="#DDD" /><TextBlock Text="{Binding MoonPhase}" Foreground="#EEE" /><TextBlock Text="  Illum: " Foreground="#DDD" /><TextBlock Text="{Binding MoonIllumination}" Foreground="#EEE" /><TextBlock Text="%" Foreground="#EEE"/></StackPanel>
+                <StackPanel Orientation="Horizontal"><TextBlock Text="Moonrise: " Foreground="#DDD"/><TextBlock Text="{Binding Moonrise}" Foreground="#EEE" /><TextBlock Text="  Moonset: " Foreground="#DDD" /><TextBlock Text="{Binding Moonset}" Foreground="#EEE"/></StackPanel>
+              </StackPanel>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
+    </ScrollViewer>
+
+    <!-- Error banner -->
+    <Border Grid.Row="0" Background="#7A1F1F" CornerRadius="6" Padding="8" IsVisible="{Binding HasError}">
+      <TextBlock Text="{Binding ErrorMessage}" Foreground="White" />
+    </Border>
+
+    <!-- Loading overlay -->
+    <Border Background="#80000000" IsVisible="{Binding IsLoading}" Grid.RowSpan="3">
+      <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <ProgressBar Width="240" IsIndeterminate="True" />
+        <TextBlock Text="Loading..." Foreground="White" HorizontalAlignment="Center" Margin="8" />
+      </StackPanel>
+    </Border>
+  </Grid>
+
+</Window>

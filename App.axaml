@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Heather.App">
+  <Application.Styles>
+    <!-- Include Fluent theme resources directly to avoid XAML property mismatch across versions -->
+    <StyleInclude Source="avares://Avalonia.Themes.Fluent/FluentTheme.xaml" />
+  <!-- DataGrid theme removed (not referenced) -->
+  </Application.Styles>
+</Application>
