@@ -232,7 +232,7 @@ namespace Heather.ViewModels
             Sunrise = day.Astro?.Sunrise ?? string.Empty;
             Sunset = day.Astro?.Sunset ?? string.Empty;
             MoonPhase = day.Astro?.MoonPhase ?? string.Empty;
-            MoonIllumination = day.Astro?.MoonIllumination ?? string.Empty;
+            MoonIllumination = day.Astro?.MoonIllumination?.ToString() ?? string.Empty;
             Moonrise = day.Astro?.Moonrise ?? string.Empty;
             Moonset = day.Astro?.Moonset ?? string.Empty;
             IconUrl = NormalizeIconUrl(day.Day?.Condition?.Icon);

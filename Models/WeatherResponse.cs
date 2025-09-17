@@ -81,6 +81,6 @@ namespace Heather.Models
         [JsonPropertyName("moonrise")] public string? Moonrise { get; set; }
         [JsonPropertyName("moonset")] public string? Moonset { get; set; }
         [JsonPropertyName("moon_phase")] public string? MoonPhase { get; set; }
-        [JsonPropertyName("moon_illumination")] public string? MoonIllumination { get; set; }
+        [JsonPropertyName("moon_illumination")] public int? MoonIllumination { get; set; }
     }
 }
