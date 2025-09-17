@@ -17,17 +17,17 @@
 
     <!-- Top bar: Search + Days selector + Unit toggle -->
     <StackPanel Orientation="Horizontal" Spacing="8">
-      <TextBox Width="380" Watermark="Enter city, ZIP or lat,long" Text="{Binding Query, Mode=TwoWay}"/>
-      <Button Content="Search" Command="{Binding SearchCommand}" />
+  <TextBox Width="380" Watermark="Enter city, ZIP or lat,long" Text="{Binding Query, Mode=TwoWay}" TabIndex="1" />
+  <Button Content="Search" Command="{Binding SearchCommand}" TabIndex="2" />
 
       <!-- Days selector: 1-3 -->
       <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0">
         <TextBlock Text="Days:" Foreground="#CCC" VerticalAlignment="Center" Margin="0,0,6,0"/>
-        <ComboBox ItemsSource="{Binding DaysOptions}" SelectedItem="{Binding SelectedDays, Mode=TwoWay}" Width="64"/>
+  <ComboBox ItemsSource="{Binding DaysOptions}" SelectedItem="{Binding SelectedDays, Mode=TwoWay}" Width="64" TabIndex="3" />
       </StackPanel>
 
       <!-- Unit toggle simple button -->
-      <Button Content="°C / °F" Command="{Binding ToggleUnitsCommand}" HorizontalAlignment="Left"/>
+  <Button Content="°C / °F" Command="{Binding ToggleUnitsCommand}" HorizontalAlignment="Left" TabIndex="4" />
     </StackPanel>
 
     <!-- Current weather card -->
