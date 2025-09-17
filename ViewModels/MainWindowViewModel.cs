@@ -80,6 +80,18 @@ namespace Heather.ViewModels
 
         private bool _isSearching = false;
 
+        // subtle highlight opacity for transitions when data updates
+        private double _highlightOpacity = 0.0;
+        public double HighlightOpacity
+        {
+            get => _highlightOpacity;
+            set
+            {
+                _highlightOpacity = value;
+                OnPropertyChanged(nameof(HighlightOpacity));
+            }
+        }
+
         private async Task SearchAsync()
         {
             // Prevent concurrent searches

@@ -2,6 +2,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:Heather.ViewModels"
+        xmlns:controls="clr-namespace:Heather.Controls;assembly=Heather"
         x:Class="Heather.MainWindow"
         Title="Heather — Weather"
         Width="920" Height="620">
@@ -11,6 +12,9 @@
   </Design.DataContext>
 
   <Grid RowDefinitions="Auto,Auto,*" Margin="14" Background="#0A0A0C">
+    <!-- subtle highlight overlay for transitions -->
+    <Border Background="#FFFFFFFF" Opacity="{Binding HighlightOpacity}" Grid.RowSpan="3" IsHitTestVisible="False" />
+
     <!-- Top bar: Search + Days selector + Unit toggle -->
     <StackPanel Orientation="Horizontal" Spacing="8">
       <TextBox Width="380" Watermark="Enter city, ZIP or lat,long" Text="{Binding Query, Mode=TwoWay}"/>
@@ -37,7 +41,7 @@
 
         <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
-            <Image Source="{Binding Current.IconUrl}" Width="64" Height="64" Stretch="Uniform" />
+            <controls:WeatherIcon IconType="{Binding Current.ConditionText}" Width="64" Height="64" />
             <TextBlock Text="{Binding Current.TemperatureFormatted}" FontSize="48" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" />
           </StackPanel>
 
@@ -67,7 +71,7 @@
             <Border Margin="6" Padding="12" CornerRadius="8" Background="#111214" Width="200">
               <StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                  <Image Source="{Binding IconUrl}" Width="36" Height="36" />
+                  <controls:WeatherIcon IconType="{Binding Condition}" Width="36" Height="36" />
                   <TextBlock Text="{Binding DateReadable}" FontWeight="Bold" Foreground="#EEE" />
                 </StackPanel>
                 <TextBlock Text="{Binding Condition}" Foreground="#DDD" />

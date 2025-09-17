@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Heather.Controls.WeatherIcon">
+  <Grid>
+    <!-- Sun group -->
+    <Canvas x:Name="SunGroup" Width="64" Height="64" IsVisible="False">
+      <Ellipse Canvas.Left="14" Canvas.Top="14" Width="36" Height="36" Fill="#FFD54F" />
+      <!-- simple rays as thin rectangles (Line not supported in this project) -->
+      <Rectangle Canvas.Left="31" Canvas.Top="0" Width="2" Height="10" Fill="#FFD54F" />
+      <Rectangle Canvas.Left="31" Canvas.Top="54" Width="2" Height="10" Fill="#FFD54F" />
+      <Rectangle Canvas.Left="0" Canvas.Top="31" Width="10" Height="2" Fill="#FFD54F" />
+      <Rectangle Canvas.Left="54" Canvas.Top="31" Width="10" Height="2" Fill="#FFD54F" />
+    </Canvas>
+
+    <!-- Cloud group -->
+    <Canvas x:Name="CloudGroup" Width="64" Height="64" IsVisible="False">
+      <Ellipse Canvas.Left="10" Canvas.Top="22" Width="36" Height="22" Fill="#E0E0E0" />
+      <Ellipse Canvas.Left="18" Canvas.Top="14" Width="28" Height="24" Fill="#E0E0E0" />
+      <Rectangle Canvas.Left="16" Canvas.Top="28" Width="36" Height="16" Fill="#E0E0E0" RadiusX="8" RadiusY="8" />
+    </Canvas>
+
+    <!-- Moon group -->
+    <Canvas x:Name="MoonGroup" Width="64" Height="64" IsVisible="False">
+      <Ellipse Canvas.Left="14" Canvas.Top="14" Width="36" Height="36" Fill="#F5F3CE" />
+      <Ellipse Canvas.Left="22" Canvas.Top="10" Width="28" Height="28" Fill="#0A0A0C" Opacity="0.75" />
+    </Canvas>
+  </Grid>
+</UserControl>
