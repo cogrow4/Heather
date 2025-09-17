@@ -20,11 +20,16 @@ namespace Heather.ViewModels
             SearchCommand = new AsyncRelayCommand(SearchAsync);
             UseFahrenheit = false;
             ToggleUnitsCommand = new RelayCommand(ToggleUnits);
+            
+            // Initialize with default search
+            _ = SearchAsync();
 
             // default days selector: 3 (user requested 1-3 day selector)
             SelectedDays = 3;
             DaysOptions = new[] { 1, 2, 3 };
         }
+
+        public string UnitToggleText => UseFahrenheit ? "°F" : "°C";
 
         public IRelayCommand ToggleUnitsCommand { get; }
 
@@ -45,6 +50,7 @@ namespace Heather.ViewModels
 
             OnPropertyChanged(nameof(Current));
             OnPropertyChanged(nameof(UseFahrenheit));
+            OnPropertyChanged(nameof(UnitToggleText));
         }
 
         public int[] DaysOptions { get; }
@@ -98,10 +104,17 @@ namespace Heather.ViewModels
             if (_isSearching) return;
             _isSearching = true;
 
+            // Add subtle highlight animation
+            HighlightOpacity = 0.05;
+            await Task.Delay(100);
+            HighlightOpacity = 0.0;
+
             IsLoading = true;
             ErrorMessage = string.Empty;
             OnPropertyChanged(nameof(IsLoading));
             OnPropertyChanged(nameof(ErrorMessage));
+            OnPropertyChanged(nameof(HasError));
+            
             try
             {
                 var resp = await _client.GetForecastAsync(Query ?? string.Empty, SelectedDays);
@@ -124,6 +137,11 @@ namespace Heather.ViewModels
                     OnPropertyChanged(nameof(LocalTime));
                     OnPropertyChanged(nameof(Current));
                     OnPropertyChanged(nameof(HasError));
+                    
+                    // Trigger subtle success animation
+                    HighlightOpacity = 0.02;
+                    await Task.Delay(200);
+                    HighlightOpacity = 0.0;
                 }
             }
             catch (Exception ex)

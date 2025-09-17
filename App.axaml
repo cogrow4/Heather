@@ -2,24 +2,184 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Heather.App">
+  <Application.Resources>
+    <!-- Advanced Color Palette -->
+    <Color x:Key="PrimaryDark">#0A0B0F</Color>
+    <Color x:Key="SecondaryDark">#1A1D23</Color>
+    <Color x:Key="AccentBlue">#4A9EFF</Color>
+    <Color x:Key="AccentPurple">#8B5CF6</Color>
+    <Color x:Key="TextPrimary">#FFFFFF</Color>
+    <Color x:Key="TextSecondary">#B8BCC8</Color>
+    <Color x:Key="TextTertiary">#6B7280</Color>
+    <Color x:Key="CardBackground">#1E2128</Color>
+    <Color x:Key="GlassOverlay">#20FFFFFF</Color>
+    
+    <!-- Gradient Brushes -->
+    <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
+      <GradientStop Color="#0F172A" Offset="0"/>
+      <GradientStop Color="#1E293B" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="1,1">
+      <GradientStop Color="#1E2128" Offset="0"/>
+      <GradientStop Color="#252A34" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="AccentGradient" StartPoint="0,0" EndPoint="1,0">
+      <GradientStop Color="#4A9EFF" Offset="0"/>
+      <GradientStop Color="#8B5CF6" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <!-- Advanced Animations -->
+    <Animation x:Key="FadeInAnimation" Duration="0:0:0.6">
+      <KeyFrame Cue="0%">
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="TranslateTransform.Y" Value="20"/>
+      </KeyFrame>
+      <KeyFrame Cue="100%">
+        <Setter Property="Opacity" Value="1"/>
+        <Setter Property="TranslateTransform.Y" Value="0"/>
+      </KeyFrame>
+    </Animation>
+    
+    <Animation x:Key="ScaleInAnimation" Duration="0:0:0.4">
+      <KeyFrame Cue="0%">
+        <Setter Property="ScaleTransform.ScaleX" Value="0.9"/>
+        <Setter Property="ScaleTransform.ScaleY" Value="0.9"/>
+        <Setter Property="Opacity" Value="0"/>
+      </KeyFrame>
+      <KeyFrame Cue="100%">
+        <Setter Property="ScaleTransform.ScaleX" Value="1"/>
+        <Setter Property="ScaleTransform.ScaleY" Value="1"/>
+        <Setter Property="Opacity" Value="1"/>
+      </KeyFrame>
+    </Animation>
+  </Application.Resources>
+  
   <Application.Styles>
-    <!-- Include Fluent theme resources directly to avoid XAML property mismatch across versions -->
     <StyleInclude Source="avares://Avalonia.Themes.Fluent/FluentTheme.xaml" />
+    
+    <!-- Advanced Typography -->
     <Style Selector="TextBlock">
-      <Setter Property="FontFamily" Value="Segoe UI, Helvetica, Arial"/>
-      <Setter Property="FontSize" Value="13"/>
-      <Setter Property="Foreground" Value="#EAEAEA"/>
+      <Setter Property="FontFamily" Value="Segoe UI Variable, SF Pro Display, -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial"/>
+      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+      <Setter Property="TextWrapping" Value="Wrap"/>
     </Style>
 
+    <Style Selector="TextBlock.title">
+      <Setter Property="FontSize" Value="32"/>
+      <Setter Property="FontWeight" Value="Light"/>
+      <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+      <Setter Property="LetterSpacing" Value="0.5"/>
+    </Style>
+    
+    <Style Selector="TextBlock.subtitle">
+      <Setter Property="FontSize" Value="18"/>
+      <Setter Property="FontWeight" Value="Medium"/>
+      <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+    </Style>
+    
+    <Style Selector="TextBlock.caption">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="{StaticResource TextTertiary}"/>
+      <Setter Property="FontWeight" Value="Regular"/>
+    </Style>
+    
+    <Style Selector="TextBlock.temperature">
+      <Setter Property="FontSize" Value="72"/>
+      <Setter Property="FontWeight" Value="Thin"/>
+      <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+      <Setter Property="LetterSpacing" Value="-2"/>
+    </Style>
+
+    <!-- Advanced Window Styling -->
     <Style Selector="Window">
-      <Setter Property="Background" Value="#07070A"/>
+      <Setter Property="Background" Value="{StaticResource PrimaryGradient}"/>
+      <Setter Property="TransparencyLevelHint" Value="Blur"/>
+      <Setter Property="ExtendClientAreaToDecorationsHint" Value="True"/>
+      <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome"/>
+      <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="32"/>
     </Style>
 
-    <!-- Focus visual: use Control focus adorner via style for controls -->
-    <Style Selector="Button:focus, TextBox:focus, ComboBox:focus">
-      <Setter Property="BorderBrush" Value="#5FB0FF" />
-      <Setter Property="BorderThickness" Value="1" />
+    <!-- Glass Card Effect -->
+    <Style Selector="Border.glass-card">
+      <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+      <Setter Property="CornerRadius" Value="16"/>
+      <Setter Property="BorderBrush" Value="{StaticResource GlassOverlay}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BoxShadow" Value="0 8 32 0 #40000000"/>
+      <Setter Property="ClipToBounds" Value="False"/>
     </Style>
-  <!-- DataGrid theme removed (not referenced) -->
+    
+    <!-- Advanced Button Styling -->
+    <Style Selector="Button.modern">
+      <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+      <Setter Property="Foreground" Value="White"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="Padding" Value="20,12"/>
+      <Setter Property="FontWeight" Value="Medium"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <TransformTransition Property="ScaleTransform.ScaleX" Duration="0:0:0.1"/>
+          <TransformTransition Property="ScaleTransform.ScaleY" Duration="0:0:0.1"/>
+          <BrushTransition Property="Background" Duration="0:0:0.2"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    
+    <Style Selector="Button.modern:pointerover">
+      <Setter Property="ScaleTransform.ScaleX" Value="1.02"/>
+      <Setter Property="ScaleTransform.ScaleY" Value="1.02"/>
+    </Style>
+    
+    <Style Selector="Button.modern:pressed">
+      <Setter Property="ScaleTransform.ScaleX" Value="0.98"/>
+      <Setter Property="ScaleTransform.ScaleY" Value="0.98"/>
+    </Style>
+    
+    <!-- Advanced TextBox Styling -->
+    <Style Selector="TextBox.modern">
+      <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+      <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+      <Setter Property="BorderBrush" Value="{StaticResource GlassOverlay}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="Padding" Value="16,12"/>
+      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
+          <TransformTransition Property="ScaleTransform.ScaleX" Duration="0:0:0.1"/>
+          <TransformTransition Property="ScaleTransform.ScaleY" Duration="0:0:0.1"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    
+    <Style Selector="TextBox.modern:focus">
+      <Setter Property="BorderBrush" Value="{StaticResource AccentBlue}"/>
+      <Setter Property="ScaleTransform.ScaleX" Value="1.01"/>
+      <Setter Property="ScaleTransform.ScaleY" Value="1.01"/>
+    </Style>
+    
+    <!-- Advanced ComboBox Styling -->
+    <Style Selector="ComboBox.modern">
+      <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+      <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+      <Setter Property="BorderBrush" Value="{StaticResource GlassOverlay}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="12"/>
+      <Setter Property="Padding" Value="12,8"/>
+    </Style>
+    
+    <!-- Progress Bar Styling -->
+    <Style Selector="ProgressBar.modern">
+      <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+      <Setter Property="Foreground" Value="{StaticResource AccentGradient}"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="Height" Value="6"/>
+    </Style>
   </Application.Styles>
 </Application>
