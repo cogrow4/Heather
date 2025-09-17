@@ -5,6 +5,7 @@ using Heather.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Heather.ViewModels
 {
@@ -19,6 +20,10 @@ namespace Heather.ViewModels
             SearchCommand = new AsyncRelayCommand(SearchAsync);
             UseFahrenheit = false;
             ToggleUnitsCommand = new RelayCommand(ToggleUnits);
+
+            // default days selector: 3 (user requested 1-3 day selector)
+            SelectedDays = 3;
+            DaysOptions = new[] { 1, 2, 3 };
         }
 
         public IRelayCommand ToggleUnitsCommand { get; }
@@ -26,41 +31,68 @@ namespace Heather.ViewModels
         private void ToggleUnits()
         {
             UseFahrenheit = !UseFahrenheit;
-            // Update formatted values
-            Current = new CurrentViewModel(CurrentModelBacking ?? new Models.Current(), UseFahrenheit);
-            var items = new ObservableCollection<ForecastDayViewModel>();
-            foreach (var d in ForecastDays)
+
+            // Recreate current and forecast viewmodels to reflect changed units
+            if (CurrentModelBacking != null)
             {
-                // Recreate from underlying model is ideal, but we store simple viewmodels; in real app store models too.
+                Current = new CurrentViewModel(CurrentModelBacking, UseFahrenheit);
             }
+
+            var recreated = ForecastDays.Select(f => f.BackingDay != null ? new ForecastDayViewModel(f.BackingDay, UseFahrenheit) : f).ToList();
+            ForecastDays.Clear();
+            foreach (var r in recreated)
+                ForecastDays.Add(r);
+
             OnPropertyChanged(nameof(Current));
             OnPropertyChanged(nameof(UseFahrenheit));
         }
 
-    public string Query { get; set; } = "New York";
-    public bool UseFahrenheit { get; set; }
-    public string LocationName { get; set; } = string.Empty;
-    public string LocalTime { get; set; } = string.Empty;
+        public int[] DaysOptions { get; }
 
-    public CurrentViewModel Current { get; set; } = new CurrentViewModel();
-    private Models.Current? CurrentModelBacking { get; set; }
+        private int _selectedDays;
+        public int SelectedDays
+        {
+            get => _selectedDays;
+            set
+            {
+                if (_selectedDays == value) return;
+                _selectedDays = value;
+                OnPropertyChanged(nameof(SelectedDays));
+                // trigger a fresh search with the new day selection
+                _ = SearchAsync();
+            }
+        }
+
+        public string Query { get; set; } = "New York";
+        public bool UseFahrenheit { get; set; }
+        public string LocationName { get; set; } = string.Empty;
+        public string LocalTime { get; set; } = string.Empty;
+
+        public CurrentViewModel Current { get; set; } = new CurrentViewModel();
+        private Models.Current? CurrentModelBacking { get; set; }
 
         public ObservableCollection<ForecastDayViewModel> ForecastDays { get; }
 
         public IAsyncRelayCommand SearchCommand { get; }
-    public bool IsLoading { get; set; }
-    public string ErrorMessage { get; set; } = string.Empty;
-    public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+        public bool IsLoading { get; set; }
+        public string ErrorMessage { get; set; } = string.Empty;
+        public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
+        private bool _isSearching = false;
 
         private async Task SearchAsync()
         {
+            // Prevent concurrent searches
+            if (_isSearching) return;
+            _isSearching = true;
+
             IsLoading = true;
             ErrorMessage = string.Empty;
             OnPropertyChanged(nameof(IsLoading));
             OnPropertyChanged(nameof(ErrorMessage));
             try
             {
-                var resp = await _client.GetForecastAsync(Query ?? string.Empty, 3);
+                var resp = await _client.GetForecastAsync(Query ?? string.Empty, SelectedDays);
                 if (resp?.Location != null && resp.Current != null && resp.Forecast?.Forecastday != null)
                 {
                     LocationName = $"{resp.Location.Name}, {resp.Location.Country}";
@@ -71,7 +103,10 @@ namespace Heather.ViewModels
                     foreach (var d in resp.Forecast.Forecastday)
                     {
                         if (d != null)
-                            ForecastDays.Add(new ForecastDayViewModel(d, UseFahrenheit));
+                        {
+                            var vm = new ForecastDayViewModel(d, UseFahrenheit);
+                            ForecastDays.Add(vm);
+                        }
                     }
                     OnPropertyChanged(nameof(LocationName));
                     OnPropertyChanged(nameof(LocalTime));
@@ -89,6 +124,7 @@ namespace Heather.ViewModels
             {
                 IsLoading = false;
                 OnPropertyChanged(nameof(IsLoading));
+                _isSearching = false;
             }
         }
     }
@@ -107,6 +143,7 @@ namespace Heather.ViewModels
         public string DewpointText { get; set; } = string.Empty;
         public string PrecipText { get; set; } = string.Empty;
         public bool IsDay { get; set; }
+        public string IconUrl { get; set; } = string.Empty;
 
         public CurrentViewModel() { }
 
@@ -120,6 +157,8 @@ namespace Heather.ViewModels
             GustText = $"Gusts {current.GustKph:F0} kph";
             DewpointText = $"Dew {current.DewpointC:F1}°C";
             PrecipText = $"{current.PrecipMm:F1} mm";
+            IconUrl = NormalizeIconUrl(current.Condition?.Icon);
+
             if (useF)
             {
                 TemperatureFormatted = $"{TempF:F0}°F";
@@ -138,33 +177,61 @@ namespace Heather.ViewModels
             }
             IsDay = current.IsDay == 1;
         }
+
+        public string IsDayText => IsDay ? "Day" : "Night";
+
+        private string NormalizeIconUrl(string? raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
+            if (raw.StartsWith("//")) return "https:" + raw;
+            if (raw.StartsWith("http")) return raw;
+            return raw;
+        }
     }
 
     public class ForecastDayViewModel
     {
+        public Models.Forecastday? BackingDay { get; }
         public string DateReadable { get; }
         public string Condition { get; }
         public double MaxTempC { get; }
         public double MinTempC { get; }
-        public string MaxTempFormatted => $"{MaxTempC:F0}°C";
-        public string MinTempFormatted => $"{MinTempC:F0}°C";
+        private bool UseF { get; }
+        public string MaxTempFormatted => UseF ? $"{MaxTempC * 9 / 5 + 32:F0}°F" : $"{MaxTempC:F0}°C";
+        public string MinTempFormatted => UseF ? $"{MinTempC * 9 / 5 + 32:F0}°F" : $"{MinTempC:F0}°C";
         public int ChanceOfPrecip { get; }
         public string Sunrise { get; }
         public string Sunset { get; }
         public string MoonPhase { get; }
         public string MoonIllumination { get; }
+        public string Moonrise { get; }
+        public string Moonset { get; }
+        public string IconUrl { get; }
 
         public ForecastDayViewModel(Models.Forecastday day, bool useF)
         {
+            BackingDay = day;
             DateReadable = day.Date ?? string.Empty;
             Condition = day.Day?.Condition?.Text ?? string.Empty;
             MaxTempC = day.Day?.MaxtempC ?? 0;
             MinTempC = day.Day?.MintempC ?? 0;
+            UseF = useF;
             ChanceOfPrecip = day.Day?.DailyChanceOfPrecip ?? 0;
             Sunrise = day.Astro?.Sunrise ?? string.Empty;
             Sunset = day.Astro?.Sunset ?? string.Empty;
             MoonPhase = day.Astro?.MoonPhase ?? string.Empty;
             MoonIllumination = day.Astro?.MoonIllumination ?? string.Empty;
+            Moonrise = day.Astro?.Moonrise ?? string.Empty;
+            Moonset = day.Astro?.Moonset ?? string.Empty;
+            IconUrl = NormalizeIconUrl(day.Day?.Condition?.Icon);
+        }
+
+        private string NormalizeIconUrl(string? raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
+            if (raw.StartsWith("//")) return "https:" + raw;
+            if (raw.StartsWith("http")) return raw;
+            return raw;
         }
     }
 }

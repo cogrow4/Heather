@@ -10,12 +10,20 @@
     <vm:MainWindowViewModel/>
   </Design.DataContext>
 
-  <Grid RowDefinitions="Auto,Auto,*" Margin="14">
-    <!-- Search bar -->
+  <Grid RowDefinitions="Auto,Auto,*" Margin="14" Background="#0A0A0C">
+    <!-- Top bar: Search + Days selector + Unit toggle -->
     <StackPanel Orientation="Horizontal" Spacing="8">
       <TextBox Width="380" Watermark="Enter city, ZIP or lat,long" Text="{Binding Query, Mode=TwoWay}"/>
       <Button Content="Search" Command="{Binding SearchCommand}" />
-      <Button Content="°C / °F" Command="{Binding ToggleUnitsCommand}" />
+
+      <!-- Days selector: 1-3 -->
+      <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0">
+        <TextBlock Text="Days:" Foreground="#CCC" VerticalAlignment="Center" Margin="0,0,6,0"/>
+        <ComboBox ItemsSource="{Binding DaysOptions}" SelectedItem="{Binding SelectedDays, Mode=TwoWay}" Width="64"/>
+      </StackPanel>
+
+      <!-- Unit toggle simple button -->
+      <Button Content="°C / °F" Command="{Binding ToggleUnitsCommand}" HorizontalAlignment="Left"/>
     </StackPanel>
 
     <!-- Current weather card -->
@@ -28,8 +36,12 @@
         </StackPanel>
 
         <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-          <TextBlock Text="{Binding Current.TemperatureFormatted}" FontSize="48" FontWeight="Bold" Foreground="White" />
-          <TextBlock FontSize="12" Foreground="#BBB">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+            <Image Source="{Binding Current.IconUrl}" Width="64" Height="64" Stretch="Uniform" />
+            <TextBlock Text="{Binding Current.TemperatureFormatted}" FontSize="48" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" />
+          </StackPanel>
+
+          <TextBlock FontSize="12" Foreground="#BBB" HorizontalAlignment="Center">
             <Run Text="Feels like "/>
             <Run Text="{Binding Current.FeelsLikeFormatted}" />
           </TextBlock>
@@ -54,7 +66,10 @@
           <DataTemplate>
             <Border Margin="6" Padding="12" CornerRadius="8" Background="#111214" Width="200">
               <StackPanel>
-                <TextBlock Text="{Binding DateReadable}" FontWeight="Bold" Foreground="#EEE" />
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                  <Image Source="{Binding IconUrl}" Width="36" Height="36" />
+                  <TextBlock Text="{Binding DateReadable}" FontWeight="Bold" Foreground="#EEE" />
+                </StackPanel>
                 <TextBlock Text="{Binding Condition}" Foreground="#DDD" />
                 <StackPanel Orientation="Horizontal"><TextBlock Text="High: " Foreground="#DDD"/><TextBlock Text="{Binding MaxTempFormatted}" Foreground="#EEE"/><TextBlock Text="  " /><TextBlock Text="Low: " Foreground="#DDD"/><TextBlock Text="{Binding MinTempFormatted}" Foreground="#EEE"/></StackPanel>
                 <StackPanel Orientation="Horizontal"><TextBlock Text="Chance Precip: " Foreground="#DDD"/><TextBlock Text="{Binding ChanceOfPrecip}" Foreground="#EEE" /><TextBlock Text="%" Foreground="#EEE"/></StackPanel>
