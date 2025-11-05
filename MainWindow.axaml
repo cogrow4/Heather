@@ -47,7 +47,7 @@
           <StackPanel Spacing="16">
             <TextBlock Text="Search Location" Classes="subtitle"/>
             
-            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnGap="12">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" >
               <TextBox Grid.Column="0" 
                        Classes="modern"
                        Watermark="Enter city, ZIP code, or coordinates..." 
@@ -151,11 +151,9 @@
             </StackPanel>
 
             <!-- Advanced Weather Metrics Grid -->
-            <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" 
-                  ColumnDefinitions="*,*,*,*" 
-                  RowDefinitions="Auto,Auto" 
-                  ColumnGap="24" 
-                  RowGap="16"
+            <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
+                  ColumnDefinitions="*,*,*,*"
+                  RowDefinitions="Auto,Auto"
                   Margin="0,24,0,0">
               
               <!-- Wind Information -->
@@ -314,7 +312,7 @@
                         </StackPanel>
                         
                         <!-- Temperature Range -->
-                        <Grid ColumnDefinitions="*,Auto,*" ColumnGap="8">
+                        <Grid ColumnDefinitions="*,Auto,*">
                           <StackPanel Grid.Column="0" HorizontalAlignment="Center">
                             <TextBlock Text="High" Classes="caption" HorizontalAlignment="Center"/>
                             <TextBlock Text="{Binding MaxTempFormatted}" 
@@ -353,7 +351,7 @@
                         <StackPanel Spacing="12">
                           <TextBlock Text="🌅 Astronomical Data" Classes="caption" FontWeight="Medium"/>
                           
-                          <Grid ColumnDefinitions="*,*" ColumnGap="16" RowGap="8">
+                          <Grid ColumnDefinitions="*,*">
                             <StackPanel Grid.Column="0" Grid.Row="0">
                               <TextBlock Text="Sunrise" Classes="caption"/>
                               <TextBlock Text="{Binding Sunrise}" FontSize="12" Foreground="{StaticResource TextPrimary}"/>

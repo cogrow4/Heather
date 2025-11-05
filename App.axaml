@@ -31,29 +31,6 @@
     </LinearGradientBrush>
     
     <!-- Advanced Animations -->
-    <Animation x:Key="FadeInAnimation" Duration="0:0:0.6">
-      <KeyFrame Cue="0%">
-        <Setter Property="Opacity" Value="0"/>
-        <Setter Property="TranslateTransform.Y" Value="20"/>
-      </KeyFrame>
-      <KeyFrame Cue="100%">
-        <Setter Property="Opacity" Value="1"/>
-        <Setter Property="TranslateTransform.Y" Value="0"/>
-      </KeyFrame>
-    </Animation>
-    
-    <Animation x:Key="ScaleInAnimation" Duration="0:0:0.4">
-      <KeyFrame Cue="0%">
-        <Setter Property="ScaleTransform.ScaleX" Value="0.9"/>
-        <Setter Property="ScaleTransform.ScaleY" Value="0.9"/>
-        <Setter Property="Opacity" Value="0"/>
-      </KeyFrame>
-      <KeyFrame Cue="100%">
-        <Setter Property="ScaleTransform.ScaleX" Value="1"/>
-        <Setter Property="ScaleTransform.ScaleY" Value="1"/>
-        <Setter Property="Opacity" Value="1"/>
-      </KeyFrame>
-    </Animation>
   </Application.Resources>
   
   <Application.Styles>
@@ -123,8 +100,8 @@
       <Setter Property="Cursor" Value="Hand"/>
       <Setter Property="Transitions">
         <Transitions>
-          <TransformTransition Property="ScaleTransform.ScaleX" Duration="0:0:0.1"/>
-          <TransformTransition Property="ScaleTransform.ScaleY" Duration="0:0:0.1"/>
+          <DoubleTransition Property="ScaleTransform.ScaleX" Duration="0:0:0.1"/>
+          <DoubleTransition Property="ScaleTransform.ScaleY" Duration="0:0:0.1"/>
           <BrushTransition Property="Background" Duration="0:0:0.2"/>
         </Transitions>
       </Setter>
@@ -152,8 +129,8 @@
       <Setter Property="Transitions">
         <Transitions>
           <BrushTransition Property="BorderBrush" Duration="0:0:0.2"/>
-          <TransformTransition Property="ScaleTransform.ScaleX" Duration="0:0:0.1"/>
-          <TransformTransition Property="ScaleTransform.ScaleY" Duration="0:0:0.1"/>
+          <DoubleTransition Property="ScaleTransform.ScaleX" Duration="0:0:0.1"/>
+          <DoubleTransition Property="ScaleTransform.ScaleY" Duration="0:0:0.1"/>
         </Transitions>
       </Setter>
     </Style>

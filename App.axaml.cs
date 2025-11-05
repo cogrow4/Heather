@@ -1,8 +1,10 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
+using DotNetEnv;
 
 namespace Heather
 {
@@ -17,6 +19,9 @@ namespace Heather
 
         public override void OnFrameworkInitializationCompleted()
         {
+            // Load .env file if it exists
+            DotNetEnv.Env.Load();
+
             var services = new ServiceCollection();
             services.AddSingleton<HttpClient>();
             services.AddSingleton<Services.WeatherApiClient>();
